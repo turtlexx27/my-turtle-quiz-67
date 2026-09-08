@@ -592,6 +592,6 @@ if (jackpotSubmitBtn) {
 
 if (jackpotClaimBtn) {
     jackpotClaimBtn.addEventListener("click", () => {
-        window.location.href = "https://www.youtube.com/watch?v=o_383WcY9Jo"; 
+        window.location.href = "https://www.youtube.com/watch?v=xvFZjo5PgG0"; 
     });
 }
