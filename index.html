@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>龜龜心理測驗</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+</head>
+
+<div id="collection-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close-btn" id="close-collection" onclick="document.getElementById('collection-modal').style.display='none'">&times;</span>
+        <h2 style="text-align: center; margin-top: 5px;">龜龜圖鑑</h2>
+        <!-- 圖鑑網格 -->
+        <div id="collection-grid" class="collection-grid">
+            <!-- JS 會自動在這裡產生 16 個格子 -->
+        </div>
+    </div>
+</div>
+<div id="jackpot-modal" class="modal" style="display: none;">
+    <div class="modal-content" style="text-align: center;">
+        
+        <!-- 第一階段：輸入資料表單 -->
+        <div id="jackpot-form-container">
+            <h2 style="color: #ff3b30; margin-bottom: 5px;">您的限時獎勵大放送！</h2>
+            <p style="margin-top: 0;">蒐集所有蒐藏品，額外獲得一部免費的iphone17pro!：</p>
+            <div style="display: flex; flex-direction: column; gap: 12px; margin: 20px 0;">
+                <input type="text" id="jackpot-lastname" placeholder="姓" class="jackpot-input">
+                <input type="text" id="jackpot-firstname" placeholder="名" class="jackpot-input">
+                <input type="date" id="jackpot-birthday" class="jackpot-input">
+                <input type="text" id="jackpot-class" placeholder="班級" class="jackpot-input">
+                <input type="number" id="jackpot-seat" placeholder="座號" class="jackpot-input">
+            </div>
+            <button id="jackpot-submit-btn" class="primary-btn">確認送出</button>
+        </div>
+        
+        <!-- 第二階段：恭喜畫面 (預設隱藏) -->
+        <div id="jackpot-success-container" style="display: none;">
+            <h1 style="color: #ff3b30; font-size: 28px;">恭喜你贏得哀鳳17pro獲取機會！</h1>
+            <button id="jackpot-claim-btn" class="primary-btn" style="margin-top: 30px; background-color: #ff3b30; color: white;">馬上拿</button>
+        </div>
+        
+    </div>
+</div>
+<body>
+    <div id="floating-bg"></div>
+    <!-- 首頁 -->
+    <div id="start-page" class="page active">
+        <h1>你是哪種龜龜？</h1>
+        <p>16型龜龜測驗 超準 不準是你的問題</p>
+        <button id="start-btn">開始</button>
+        <button id="collection-btn-start" class="secondary-btn">龜龜圖鑑</button>
+        <button id="clear-btn" class="secondary-btn" style="color: #000000db;background: #d50000;">清除所有資料</button>
+    </div>
+
+    <!-- 測驗頁 -->
+    <div id="quiz-page" class="page">
+        <!-- 測驗進度條 -->
+        <div class="progress-wrapper" style="margin-bottom: 25px;">
+            <div id="progress-text" style="text-align: right; font-size: 13px; color: #8e8e93; margin-bottom: 6px; font-weight: bold;">1 / 8</div>
+            <div class="progress-container" style="margin-bottom: 0;">
+                <div id="progress-bar" class="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- 雙欄排版容器 -->
+        <div class="quiz-container">
+            <!-- 題目圖片區域 -->
+            <div class="quiz-media">
+                <img id="question-img" class="quiz-img" src="" alt="題目圖片" style="display: none;">
+            </div>
+            
+            <!-- 題目與選項區域 -->
+            <div class="quiz-content">
+                <p id="question-text">題目載入中...</p>
+                <div id="options-container">
+                    <!-- 選項會透過 JS 產生 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 回到上一題按鈕 -->
+        <div style="text-align: center;">
+            <button id="back-btn" class="back-btn" style="display: none;">回到上一題</button>
+        </div>
+    </div>
+
+    <!-- 結果頁 -->
+    <div id="result-page" class="page">
+        <h2>你的測驗結果是：</h2>
+        
+        <!-- 結果圖片區域 -->
+        <img id="result-img" class="quiz-img" src="" alt="結果圖片" style="display:none;">
+        
+        <h1 id="result-title">結果計算中...</h1>
+        <p id="result-desc">敘述載入中...</p>
+        <p id="result-advice" style="margin-top: 20px; padding: 15px; background: #f5f5f7; border-radius: 10px; font-weight: bold; color: #04682c;"></p>
+        
+        <!-- 結果屬性百分比進度條 -->
+        <div id="result-bars" class="result-bars-container">
+            <div class="result-bar-group">
+                <div class="result-bar-label">
+                    <span>67值</span>
+                    <span id="x-percent-text">0%</span>
+                </div>
+                <div class="progress-container">
+                    <div id="x-bar" class="progress-fill x-fill"></div>
+                </div>
+            </div>
+            <div class="result-bar-group">
+                <div class="result-bar-label">
+                    <span>叛逆值</span>
+                    <span id="y-percent-text">0%</span>
+                </div>
+                <div class="progress-container">
+                    <div id="y-bar" class="progress-fill y-fill"></div>
+                </div>
+            </div>
+        </div>
+        
+        <button id="restart-btn">再測一次</button>
+        <button id="collection-btn-result" class="secondary-btn" onclick="openCollection()">龜龜圖鑑</button>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

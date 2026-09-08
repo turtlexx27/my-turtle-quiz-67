@@ -1,0 +1,432 @@
+/* 全域設定與背景 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang TC", "黑體-繁", "微軟正黑體", sans-serif;
+    background-image: url('images/bg.png'); 
+    background-size: cover;          /* 讓圖片等比例縮放，確保完全鋪滿畫面 */
+    background-position: center;     /* 讓背景圖永遠居中對齊 */
+    background-repeat: no-repeat;    /* 防止圖片因為網頁變長而重複拼貼 */
+    background-attachment: fixed;    /* 將背景圖固定在螢幕上，避免滾動時背景切斷 */
+    
+    /* 配合置中與高度鎖定 */
+    height: 100vh;                   /* 鎖定網頁高度為螢幕高度，不產生網頁捲軸 */
+    box-sizing: border-box;          
+    margin: 0;
+    overflow: hidden;                /* 隱藏全網頁滾動條 */
+    
+    /* 電腦版置中排版：垂直與水平皆置中 */
+    display: flex;
+    justify-content: center;
+    align-items: center;             /* 改為垂直置中 */
+    background-color: #1a1a1a;       
+}
+
+/* 測驗卡片主體 - 純白色背景 */
+.page {
+    display: none;
+    background: #ffffffe8; 
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15); 
+    max-width: 800px;    /* 放寬最大寬度以容納電腦版雙欄 */
+    width: 90%;                      
+    box-sizing: border-box;
+
+    /* 限制電腦版卡片最高佔螢幕的 90% 高度，避免卡片過長被切掉 */
+    max-height: 90vh;
+    overflow-y: auto;                /* 當題目或結果字數過多時，在卡片內部自動產生捲軸 */
+}
+
+.page.active {
+    display: block;
+}
+
+/* 電腦版雙欄排版佈局 */
+.quiz-container {
+    display: flex;
+    gap: 30px;          
+    align-items: center;
+}
+
+.quiz-media {
+    flex: 1;            
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.quiz-content {
+    flex: 1;            
+}
+
+/* 標題與內文 */
+h1 {
+    color: #1d1d1f;
+    font-size: 20px;     
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+p, #question-text {
+    color: #444446;
+    font-size: 14px;     
+    font-weight: 600;
+    line-height: 1.6;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+/* 選項按鈕 */
+button {
+    background: linear-gradient(135deg, #a2e592 0%, #04682c 100%); 
+    color: white;
+    border: none;
+    padding: 12px 18px;  
+    margin: 8px 0;
+    border-radius: 10px;
+    font-size: 14px;     
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(4, 104, 44, 0.15);
+    -webkit-tap-highlight-color: transparent; 
+}
+
+button:hover {
+    transform: translateY(-1px); 
+    box-shadow: 0 6px 15px rgba(4, 104, 44, 0.25);
+}
+
+button:active {
+    transform: translateY(1px); 
+}
+
+/* 圖片通用樣式 - 電腦版 */
+.quiz-img {
+    width: 100%;
+    height: auto;
+    /* 💡 改成 350px，讓正方形插圖在電腦版有足夠的空間展開 */
+    max-height: 350px; 
+    object-fit: contain; /* 💡 改成 contain，確保整張圖完整顯示，絕對不被裁切 */
+    border-radius: 12px;
+}
+
+/* 進度條樣式 */
+.progress-container {
+    width: 100%;
+    height: 8px;
+    background-color: #e5e5ea;
+    border-radius: 4px;
+    margin-bottom: 25px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(135deg, #a2e592 0%, #04682c 100%);
+    width: 0%;
+    transition: width 0.3s ease;
+}
+
+/* 回到上一題按鈕樣式 */
+.back-btn {
+    background: transparent;
+    color: #8e8e93;
+    border: 1px solid #d1d1d6;
+    padding: 6px 14px;
+    margin-top: 15px;
+    border-radius: 8px;
+    font-size: 13px;
+    width: auto;
+    display: inline-block;
+    box-shadow: none;
+    transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+    background: #f2f2f7;
+    color: #1d1d1f;
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* 結果頁屬性條樣式 (彩虹區塊底) */
+.result-bars-container {
+    margin-top: 25px;
+    margin-bottom: 30px;
+    padding: 20px;
+    /* 這裡設定彩虹漸層背景 */
+    background: linear-gradient(135deg, #ffadad, #ffd6a5, #fdffb6, #caffbf, #9bf6ff, #a0c4ff, #bdb2ff, #ffc6ff);
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.result-bar-group {
+    margin-bottom: 15px;
+    /* 加上微透明的白底墊在文字與進度條後面，避免被彩虹背景吃掉 */
+    background: rgba(255, 255, 255, 0.65); 
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.result-bar-group:last-child {
+    margin-bottom: 0;
+}
+
+.result-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    font-weight: 700;
+    color: #444446;
+    margin-bottom: 8px;
+}
+
+/* X 值與 Y 值的進度條顏色 */
+.x-fill {
+    background: linear-gradient(135deg, #ffe600 0%, #ee820e 100%);
+}
+
+.y-fill {
+    background: linear-gradient(135deg, #92c5e5 0%, #044b68 100%);
+}
+/* 次要按鈕樣式 (給圖鑑按鈕用) */
+.secondary-btn {
+    background: #f2f2f7;
+    color: #1d1d1f;
+    margin-top: 15px;
+}
+
+/* 彈出視窗 (Modal) 背景 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* 彈出視窗的白色內容區塊 */
+.modal-content {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 450px;
+    max-height: 80vh;
+    overflow-y: auto; /* 如果內容太多，允許上下滑動 */
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* 關閉按鈕 X */
+/* 關閉按鈕 X (釘選在右上角，往下滑也不會消失) */
+.close-btn {
+    position: sticky;      /* 💡 關鍵：讓它滾動時黏在畫面上 */
+    top: 0px;            /* 黏在最頂部 */
+    float: right;          /* 靠右對齊 */
+    margin-right: -10px;
+    margin-bottom: -30px;  /* 負邊距，避免把下面的標題擠下去 */
+    
+    /* 視覺優化：加上圓形白底與一點陰影，讓它蓋在圖鑑上依然清晰可見 */
+    background: rgba(255, 255, 255, 0.95);
+    width: 38px;
+    height: 38px;
+    line-height: 34px;     /* 文字垂直置中 */
+    text-align: center;    /* 文字水平置中 */
+    border-radius: 50%;    /* 變成圓形 */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    
+    font-size: 26px;
+    font-weight: bold;
+    color: #8e8e93;
+    cursor: pointer;
+    z-index: 100;          /* 確保它永遠在最上層 */
+}
+
+/* 2x8 圖鑑網格 */
+.collection-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 切成兩欄 */
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* 每一個龜龜格子的樣式 */
+.collection-item {
+    background: #f5f5f7;
+    border-radius: 12px;
+    padding: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.collection-item img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+.collection-item p {
+    font-size: 14px;
+    margin: 0;
+    font-weight: 700;
+}
+
+/* 未解鎖的樣式：模糊 + 灰階 */
+.locked img {
+    filter: grayscale(100%) blur(6px);
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.locked p {
+    color: #8e8e93;
+}
+
+/* 確保白色卡片在最上層 */
+.page {
+    position: relative;
+    z-index: 2;
+}
+
+/* 飄動背景容器 */
+#floating-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    pointer-events: none; /* 關鍵：讓滑鼠點擊直接穿透 */
+    overflow: hidden;
+}
+
+.floating-turtle {
+    position: absolute;
+    width: 180px;           /* 稍微放大一點點，因為去背後視覺上會變小 */
+    height: auto;          /* 讓高度自動等比例縮放 */
+    opacity: 0.6;          /* 半透明才不會太搶戲 */
+    object-fit: contain;
+    /* 關鍵去背魔法：讓圖片的白色背景直接變透明 */
+    mix-blend-mode: multiply;
+    
+    /* 改用 drop-shadow 讓陰影貼合龜龜的真實輪廓，而不是一個方塊或圓圈 */
+    filter: drop-shadow(0px 4px 5px rgba(0, 0, 0, 0.3));
+    
+    top: 0;
+    left: 0;
+    will-change: transform; 
+}
+/* 彩蛋表單輸入框樣式 */
+.jackpot-input {
+    padding: 12px;
+    font-size: 16px;
+    border: 1px solid #c7c7cc;
+    border-radius: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #f2f2f7;
+}
+
+.jackpot-input:focus {
+    outline: none;
+    border-color: #007aff;
+    background-color: #ffffff;
+}
+/* 手機版專屬排版 */
+@media (max-width: 900px) {
+    .floating-turtle {
+        position: absolute;
+        width: 100px;           /* 稍微放大一點點，因為去背後視覺上會變小 */
+        height: auto;          /* 讓高度自動等比例縮放 */
+        opacity: 0.6;          /* 半透明才不會太搶戲 */
+        object-fit: contain;
+        /* 關鍵去背魔法：讓圖片的白色背景直接變透明 */
+        mix-blend-mode: multiply;
+        
+        /* 改用 drop-shadow 讓陰影貼合龜龜的真實輪廓，而不是一個方塊或圓圈 */
+        filter: drop-shadow(0px 4px 5px rgba(0, 0, 0, 0.3));
+        
+        top: 0;
+        left: 0;
+        will-change: transform; 
+    }
+    body {
+        background-image: url('images/bgsg.png') !important;
+        
+        /* 強制手機版的 body 垂直與水平置中 */
+        display: flex;
+        align-items: center;     
+        justify-content: center;    
+        height: 100vh;           
+        overflow: hidden;        
+
+        padding-bottom: 7vh;     
+        box-sizing: border-box;
+    }
+
+    .page {
+        width: 90%;                  
+        padding: 25px 20px;      
+        border-radius: 16px;
+
+        /* 取消外邊距，改由 flex 機制自動置中 */
+        margin-top: 0; 
+        margin-bottom: 0;
+
+        /* 加上手機安全區域內邊距，防止內容被瀏海或底線遮擋 */
+        padding-top: calc(25px + env(safe-area-inset-top));
+        padding-bottom: calc(25px + env(safe-area-inset-bottom));
+
+        /* 限制手機版卡片高度 */
+        max-height: 90vh;
+        overflow-y: auto;        
+        box-sizing: border-box;
+    }
+
+    .quiz-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .quiz-media, .quiz-content {
+        width: 100%;
+    }
+    
+    h1 {
+        font-size: 18px;    
+    }
+    
+    p, #question-text {
+        font-size: 13px;    
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+    
+    button {
+        padding: 11px 16px; 
+        font-size: 13px;    
+        margin: 6px 0;
+        border-radius: 8px;
+    }
+    
+    /* 手機版圖片樣式 */
+    .quiz-img {
+        /* 💡 手機版放寬到 280px，配合 1:1 正方形比例，讓圖片在手機上看起來很大很精緻 */
+        max-height: 280px;  
+        object-fit: contain; /* 💡 確保手機版也絕對不吃圖、不裁切 */
+    }
+}
